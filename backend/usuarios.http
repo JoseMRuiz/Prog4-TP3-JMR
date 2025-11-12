@@ -1,31 +1,36 @@
-### Crear usuario
-POST http://localhost:3000/usuarios
-Content-Type: application/json
+@url = http://localhost:3000
+@token = {{auth.login.response.body.token}}
 
-{
-  "nombre": "josemaria",
-  "email": "jose@example.com",
-  "password": "123456"
-}
 
-### Listar usuarios
-GET http://localhost:3000/usuarios
+### Listar todos los usuarios
+GET {{url}}/usuarios
 Authorization: Bearer {{token}}
 
 ### Obtener usuario por ID
-GET http://localhost:3000/usuarios/1
+GET {{url}}/usuarios/1
 Authorization: Bearer {{token}}
 
-### Actualizar usuario
-PUT http://localhost:3000/usuarios/1
+### Crear nuevo usuario
+# @name createUser
+POST {{url}}/usuarios
+Content-Type: application/json
+
+{
+  "nombre": "tiago alumnno",
+  "email": "jose@ejemplo.com",
+  "password": "asd!"
+}
+
+### Actualizar usuario existente
+PUT {{url}}/usuarios/1
 Authorization: Bearer {{token}}
 Content-Type: application/json
 
 {
-  "nombre": "Matías De la Puente",
-  "email": "matias@mail.com"
+  "nombre": "Usuario modificado",
+  "email": "modificado@escuela.com"
 }
 
 ### Eliminar usuario
-DELETE http://localhost:3000/usuarios/1
+DELETE {{url}}/usuarios/2
 Authorization: Bearer {{token}}

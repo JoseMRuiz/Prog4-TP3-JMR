@@ -1,0 +1,18 @@
+@token = {{auth.login.response.body.token}}
+
+### Listar notas
+GET http://localhost:3000/notas
+Authorization: Bearer {{token}}
+
+### Asignar notas
+POST http://localhost:3000/notas
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "alumno_id": 1,
+  "materia_id": 1,
+  "nota1": 8,
+  "nota2": 7,
+  "nota3": 9
+}

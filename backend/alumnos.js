@@ -6,13 +6,13 @@ import { verificarAutenticacion } from "./auth.js";
 
 const router = express.Router();
 
-// Listar alumnos
+
 router.get("/", verificarAutenticacion, async (req, res) => {
   const [rows] = await db.execute("SELECT * FROM alumnos");
   res.json({ success: true, alumnos: rows });
 });
 
-// Obtener alumno por ID
+
 router.get(
   "/:id",
   verificarAutenticacion,
@@ -27,7 +27,7 @@ router.get(
   }
 );
 
-// Crear alumno
+
 router.post(
   "/",
   verificarAutenticacion,
@@ -45,7 +45,6 @@ router.post(
   }
 );
 
-// Actualizar alumno
 router.put(
   "/:id",
   verificarAutenticacion,
@@ -65,7 +64,6 @@ router.put(
   }
 );
 
-// Eliminar alumno
 router.delete(
   "/:id",
   verificarAutenticacion,

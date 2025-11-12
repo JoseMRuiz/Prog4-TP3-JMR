@@ -1,3 +1,8 @@
+
+@token = {{auth.login.response.body.token}}
+
+
+
 ### Listar materias
 GET http://localhost:3000/materias
 Authorization: Bearer {{token}}
@@ -8,8 +13,8 @@ Authorization: Bearer {{token}}
 Content-Type: application/json
 
 {
-  "nombre": "Laboratorio III",
-  "codigo": "LAB301",
+  "nombre": "Laboratorio IV",
+  "codigo": "LAB3401",
   "anio": 3
 }
 

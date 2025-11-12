@@ -1,31 +1,32 @@
+@token = {{auth.login.response.body.token}}
+
+
 ### Listar alumnos
 GET http://localhost:3000/alumnos
 Authorization: Bearer {{token}}
-
 ### Crear alumno
 POST http://localhost:3000/alumnos
 Authorization: Bearer {{token}}
 Content-Type: application/json
 
 {
-  "nombre": "Lucas",
-  "apellido": "Fernandez",
-  "dni": "44111222"
+  "nombre": "jotita",
+  "apellido": "Ruiz",
+  "dni": "32323232"
 }
 
 ### Obtener alumno por ID
 GET http://localhost:3000/alumnos/1
 Authorization: Bearer {{token}}
-
 ### Actualizar alumno
 PUT http://localhost:3000/alumnos/1
 Authorization: Bearer {{token}}
 Content-Type: application/json
 
 {
-  "nombre": "Lucas Modificado",
-  "apellido": "Fernandez",
-  "dni": "44111222"
+  "nombre": "jose Modificado",
+  "apellido": "ruiz",
+  "dni": "12321321"
 }
 
 ### Eliminar alumno
