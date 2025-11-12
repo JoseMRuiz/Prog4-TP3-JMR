@@ -1,48 +1,58 @@
 import { useState, useEffect } from "react";
 import { useAuth } from "../Auth";
 
-export default function Alumnos() {
+export function Alumnos() {
   const { token } = useAuth();
   const [alumnos, setAlumnos] = useState([]);
   const [form, setForm] = useState({ nombre: "", apellido: "", dni: "" });
   const [editId, setEditId] = useState(null);
 
-  const fetchAlumnos = async () => {
-    const res = await fetch(`http://localhost:3000/alumnos`, {
+  const getAlumnos = async () => {
+    const res = await fetch("http://localhost:3000/alumnos", {
       headers: { Authorization: `Bearer ${token}` },
     });
     const data = await res.json();
     setAlumnos(data.alumnos || []);
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    const method = editId ? "PUT" : "POST";
-    const url = editId
-      ? `http://localhost:3000/alumnos/${editId}`
-      : `http://localhost:3000/alumnos`;
-
-    await fetch(url, {
-      method,
+  const createAlumno = async () => {
+    await fetch("http://localhost:3000/alumnos", {
+      method: "POST",
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify(form),
     });
-
-    setForm({ nombre: "", apellido: "", dni: "" });
-    setEditId(null);
-    fetchAlumnos();
   };
 
-  const handleDelete = async (id) => {
+  const updateAlumno = async (id) => {
+    await fetch(`http://localhost:3000/alumnos/${id}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(form),
+    });
+  };
+
+  const deleteAlumno = async (id) => {
     if (!confirm("¿Eliminar este alumno?")) return;
     await fetch(`http://localhost:3000/alumnos/${id}`, {
       method: "DELETE",
       headers: { Authorization: `Bearer ${token}` },
     });
-    fetchAlumnos();
+    getAlumnos();
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (editId) await updateAlumno(editId);
+    else await createAlumno();
+    setForm({ nombre: "", apellido: "", dni: "" });
+    setEditId(null);
+    getAlumnos();
   };
 
   const handleEdit = (alumno) => {
@@ -55,7 +65,7 @@ export default function Alumnos() {
   };
 
   useEffect(() => {
-    fetchAlumnos();
+    getAlumnos();
   }, []);
 
   return (
@@ -106,7 +116,7 @@ export default function Alumnos() {
               <td>{a.dni}</td>
               <td>
                 <button onClick={() => handleEdit(a)}>✏️</button>{" "}
-                <button onClick={() => handleDelete(a.id)}>🗑️</button>
+                <button onClick={() => deleteAlumno(a.id)}>🗑️</button>
               </td>
             </tr>
           ))}
