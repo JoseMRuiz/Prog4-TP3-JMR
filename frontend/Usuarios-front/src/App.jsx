@@ -5,18 +5,24 @@ import Alumnos from "./pages/Alumnos.jsx";
 import Materias from "./pages/Materias.jsx";
 import "./index.css";
 import Notas from "./pages/Notas.jsx";
+import { Register } from "./pages/Register.jsx";
 
 function Header() {
   const { token, logout } = useAuth();
   return (
     <header className="container" style={{ marginTop: "1rem" }}>
       <nav style={{ display: "flex", gap: "1rem" }}>
-        {token && (
+       {token ? (
           <>
             <Link to="/alumnos">Alumnos</Link>
             <Link to="/materias">Materias</Link>
             <Link to="/notas">Notas</Link>
             <button onClick={logout}>Salir</button>
+          </>
+        ) : (
+          <>
+            <Link to="/login">Login</Link>
+            <Link to="/register">Registro</Link> 
           </>
         )}
       </nav>
@@ -31,6 +37,7 @@ export default function App() {
         <Header />
         <Routes>
           <Route path="/login" element={<Login />} />
+           <Route path="/register" element={<Register />} /> 
 
           <Route
             path="/alumnos"
