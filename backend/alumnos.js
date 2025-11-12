@@ -6,42 +6,46 @@ import { verificarAutenticacion } from "./auth.js";
 
 const router = express.Router();
 
-
-router.get("/", verificarAutenticacion, async (req, res) => {
+router.get("/", verificarAutenticacion, async (req, res, next) => {
   const [rows] = await db.execute("SELECT * FROM alumnos");
   res.json({ success: true, alumnos: rows });
 });
-
 
 router.get(
   "/:id",
   verificarAutenticacion,
   validarId,
   verificarValidaciones,
-  async (req, res) => {
+  async (req, res, next) => {
     const { id } = req.params;
     const [rows] = await db.execute("SELECT * FROM alumnos WHERE id = ?", [id]);
     if (rows.length === 0)
-      return res.status(404).json({ success: false, message: "No encontrado" });
+      return res.status(404).json({ success: false, message: "Alumno no encontrado" });
     res.json({ success: true, alumno: rows[0] });
   }
 );
 
-
 router.post(
   "/",
   verificarAutenticacion,
-  body("nombre").notEmpty(),
-  body("apellido").notEmpty(),
-  body("dni").notEmpty(),
+  body("nombre").notEmpty().withMessage("El nombre es obligatorio"),
+  body("apellido").notEmpty().withMessage("El apellido es obligatorio"),
+  body("dni").notEmpty().isNumeric().withMessage("El DNI debe ser numérico"),
   verificarValidaciones,
-  async (req, res) => {
+  async (req, res, next) => {
     const { nombre, apellido, dni } = req.body;
-    await db.execute(
+    const [existe] = await db.execute("SELECT id FROM alumnos WHERE dni = ?", [dni]);
+    if (existe.length)
+      return res.status(400).json({ success: false, message: "DNI duplicado" });
+
+    const [result] = await db.execute(
       "INSERT INTO alumnos (nombre, apellido, dni) VALUES (?, ?, ?)",
       [nombre, apellido, dni]
     );
-    res.status(201).json({ success: true, message: "Alumno creado" });
+    res.status(201).json({
+      success: true,
+      alumno: { id: result.insertId, nombre, apellido, dni },
+    });
   }
 );
 
@@ -49,16 +53,20 @@ router.put(
   "/:id",
   verificarAutenticacion,
   validarId,
-  body("nombre").notEmpty(),
-  body("apellido").notEmpty(),
-  body("dni").notEmpty(),
+  body("nombre").optional(),
+  body("apellido").optional(),
+  body("dni").optional().isNumeric(),
   verificarValidaciones,
-  async (req, res) => {
+  async (req, res, next) => {
     const { id } = req.params;
     const { nombre, apellido, dni } = req.body;
+    const [rows] = await db.execute("SELECT * FROM alumnos WHERE id = ?", [id]);
+    if (!rows.length)
+      return res.status(404).json({ success: false, message: "Alumno no encontrado" });
+
     await db.execute(
       "UPDATE alumnos SET nombre=?, apellido=?, dni=? WHERE id=?",
-      [nombre, apellido, dni, id]
+      [nombre || rows[0].nombre, apellido || rows[0].apellido, dni || rows[0].dni, id]
     );
     res.json({ success: true, message: "Alumno actualizado" });
   }
@@ -69,7 +77,7 @@ router.delete(
   verificarAutenticacion,
   validarId,
   verificarValidaciones,
-  async (req, res) => {
+  async (req, res, next) => {
     const { id } = req.params;
     await db.execute("DELETE FROM alumnos WHERE id=?", [id]);
     res.json({ success: true, message: "Alumno eliminado" });
