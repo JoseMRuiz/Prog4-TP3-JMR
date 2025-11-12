@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useAuth } from "./Auth.jsx";
+import { useAuth } from "../Auth";
 import { useNavigate } from "react-router-dom";
 
 export function Login() {
@@ -12,7 +12,7 @@ export function Login() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await fetch("http://localhost:3000/api/usuarios/login", {
+      const res = await fetch("http://localhost:3000/auth/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),

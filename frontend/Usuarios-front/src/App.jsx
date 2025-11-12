@@ -1,10 +1,10 @@
 import { BrowserRouter, Routes, Route, Navigate, Link } from "react-router-dom";
 import { AuthProvider, AuthPage, useAuth } from "./Auth.jsx";
-import { Login } from "./Login.jsx";
-import { Alumnos } from "./Alumnos.jsx";
-import { Materias } from "./Materias.jsx";
-import { Notas } from "./Notas.jsx";
+import { Login } from "./pages/Login.jsx";
+import Alumnos from "./pages/Alumnos.jsx";
+import Materias from "./pages/Materias.jsx";
 import "./index.css";
+import Notas from "./pages/Notas.jsx";
 
 function Header() {
   const { token, logout } = useAuth();
