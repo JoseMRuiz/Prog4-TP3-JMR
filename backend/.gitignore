@@ -1,2 +1,5 @@
-node_modules/
+# Archivos sensibles
 .env
+
+# Dependencias
+node_modules/
