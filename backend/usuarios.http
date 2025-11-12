@@ -16,9 +16,9 @@ POST {{url}}/usuarios
 Content-Type: application/json
 
 {
-  "nombre": "tiago alumnno",
-  "email": "jose@ejemplo.com",
-  "password": "asd!"
+  "nombre": "Jose m ruiz",
+  "email": "jose@example.com",
+  "password": "Password123!"
 }
 
 ### Actualizar usuario existente
