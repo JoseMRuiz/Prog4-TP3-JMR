@@ -1,0 +1,29 @@
+### Listar materias
+GET http://localhost:3000/materias
+Authorization: Bearer {{token}}
+
+### Crear materia
+POST http://localhost:3000/materias
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "nombre": "Laboratorio III",
+  "codigo": "LAB301",
+  "anio": 3
+}
+
+### Actualizar materia
+PUT http://localhost:3000/materias/1
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "nombre": "Laboratorio Actualizado",
+  "codigo": "LAB301",
+  "anio": 3
+}
+
+### Eliminar materia
+DELETE http://localhost:3000/materias/1
+Authorization: Bearer {{token}}
