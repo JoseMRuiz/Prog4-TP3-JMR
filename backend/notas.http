@@ -1,18 +1,45 @@
 @token = {{auth.login.response.body.token}}
 
-### Listar notas
+
+###  Obtener todas las notas
 GET http://localhost:3000/notas
 Authorization: Bearer {{token}}
+Content-Type: application/json
 
-### Asignar notas
+
+### Obtener una nota por ID
+GET http://localhost:3000/notas/1
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+
+###  Crear un nuevo registro de notas
 POST http://localhost:3000/notas
 Authorization: Bearer {{token}}
 Content-Type: application/json
 
 {
   "alumno_id": 1,
-  "materia_id": 1,
+  "materia_id": 2,
   "nota1": 8,
-  "nota2": 7,
+  "nota2": 7.5,
   "nota3": 9
 }
+
+
+###  Actualizar notas existentes
+PUT http://localhost:3000/notas/1
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "nota1": 9,
+  "nota2": 8,
+  "nota3": 10
+}
+
+
+### 🔹 Eliminar un registro de notas
+DELETE http://localhost:3000/notas/1
+Authorization: Bearer {{token}}
+Content-Type: application/json

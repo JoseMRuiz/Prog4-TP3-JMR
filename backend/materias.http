@@ -1,5 +1,5 @@
 
-@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjMsInVzZXJFbWFpbCI6Impvc2VAZXhhbXBsZS5jb20iLCJpYXQiOjE3NjI5NzE1MTIsImV4cCI6MTc2Mjk4NTkxMn0.Qc-Z1k1edq5h8byNYj6kpcE4ZYQsUmFlKu8A8cXIy8o
+@token = {{auth.login.response.body.token}}
 
 
 
@@ -13,8 +13,8 @@ Authorization: Bearer {{token}}
 Content-Type: application/json
 
 {
-  "nombre": "Laboratorio V",
-  "codigo": "LAB5401",
+  "nombre": "Laboratorio IV",
+  "codigo": "LAB3401",
   "anio": 3
 }
 
@@ -30,5 +30,5 @@ Content-Type: application/json
 }
 
 ### Eliminar materia
-DELETE http://localhost:3000/materias/2
+DELETE http://localhost:3000/materias/1
 Authorization: Bearer {{token}}

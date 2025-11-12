@@ -1,22 +1,15 @@
 import express from "express";
 import { db } from "./db.js";
 import { validarId, verificarValidaciones } from "./validaciones.js";
-import { body, param } from "express-validator";
+import { body } from "express-validator";
 import { verificarAutenticacion } from "./auth.js";
 
 const router = express.Router();
 
-
 router.get("/", verificarAutenticacion, async (req, res) => {
-  try {
-    const [rows] = await db.execute("SELECT * FROM materias");
-    res.json({ success: true, materias: rows });
-  } catch (error) {
-    console.error("Error al obtener materias:", error);
-    res.status(500).json({ success: false, message: "Error del servidor" });
-  }
+  const [rows] = await db.execute("SELECT * FROM materias ORDER BY anio ASC, nombre ASC");
+  res.json({ success: true, materias: rows });
 });
-
 
 router.post(
   "/",
@@ -34,34 +27,22 @@ router.post(
     verificarValidaciones,
   ],
   async (req, res) => {
-    try {
-      const { nombre, codigo, anio } = req.body;
+    const { nombre, codigo, anio } = req.body;
+    const [materiaExistente] = await db.execute("SELECT id FROM materias WHERE codigo = ?", [codigo]);
+    if (materiaExistente.length > 0)
+      return res.status(400).json({ success: false, message: "Ya existe una materia con ese código" });
 
-      // Validar que no exista una materia con el mismo código
-      const [materiaExistente] = await db.execute(
-        "SELECT id FROM materias WHERE codigo = ?",
-        [codigo]
-      );
-      if (materiaExistente.length > 0) {
-        return res.status(400).json({
-          success: false,
-          message: "Ya existe una materia con ese código",
-        });
-      }
+    const [result] = await db.execute(
+      "INSERT INTO materias (nombre, codigo, anio) VALUES (?, ?, ?)",
+      [nombre, codigo, anio]
+    );
 
-      await db.execute(
-        "INSERT INTO materias (nombre, codigo, anio) VALUES (?, ?, ?)",
-        [nombre, codigo, anio]
-      );
-
-      res.status(201).json({ success: true, message: "Materia creada exitosamente" });
-    } catch (error) {
-      console.error("Error al crear materia:", error);
-      res.status(500).json({ success: false, message: "Error del servidor" });
-    }
+    res.status(201).json({
+      success: true,
+      materia: { id: result.insertId, nombre, codigo, anio },
+    });
   }
 );
-
 
 router.put(
   "/:id",
@@ -83,56 +64,33 @@ router.put(
     verificarValidaciones,
   ],
   async (req, res) => {
-    try {
-      const { id } = req.params;
-      const { nombre, codigo, anio } = req.body;
+    const { id } = req.params;
+    const { nombre, codigo, anio } = req.body;
+    const [materia] = await db.execute("SELECT * FROM materias WHERE id = ?", [id]);
+    if (materia.length === 0)
+      return res.status(404).json({ success: false, message: "Materia no encontrada" });
 
-   
-      const [materia] = await db.execute("SELECT * FROM materias WHERE id = ?", [id]);
-      if (materia.length === 0) {
-        return res.status(404).json({
-          success: false,
-          message: "Materia no encontrada",
-        });
-      }
+    await db.execute(
+      "UPDATE materias SET nombre=?, codigo=?, anio=? WHERE id=?",
+      [nombre || materia[0].nombre, codigo || materia[0].codigo, anio || materia[0].anio, id]
+    );
 
-      await db.execute(
-        "UPDATE materias SET nombre = ?, codigo = ?, anio = ? WHERE id = ?",
-        [nombre || materia[0].nombre, codigo || materia[0].codigo, anio || materia[0].anio, id]
-      );
-
-      res.json({ success: true, message: "Materia actualizada correctamente" });
-    } catch (error) {
-      console.error("Error al actualizar materia:", error);
-      res.status(500).json({ success: false, message: "Error del servidor" });
-    }
+    res.json({ success: true, message: "Materia actualizada correctamente" });
   }
 );
-
 
 router.delete(
   "/:id",
   verificarAutenticacion,
   [validarId, verificarValidaciones],
   async (req, res) => {
-    try {
-      const { id } = req.params;
+    const { id } = req.params;
+    const [materia] = await db.execute("SELECT * FROM materias WHERE id = ?", [id]);
+    if (materia.length === 0)
+      return res.status(404).json({ success: false, message: "Materia no encontrada" });
 
-      const [materia] = await db.execute("SELECT * FROM materias WHERE id = ?", [id]);
-      if (materia.length === 0) {
-        return res.status(404).json({
-          success: false,
-          message: "Materia no encontrada",
-        });
-      }
-
-      await db.execute("DELETE FROM materias WHERE id = ?", [id]);
-
-      res.json({ success: true, message: "Materia eliminada correctamente" });
-    } catch (error) {
-      console.error("Error al eliminar materia:", error);
-      res.status(500).json({ success: false, message: "Error del servidor" });
-    }
+    await db.execute("DELETE FROM materias WHERE id = ?", [id]);
+    res.json({ success: true, message: "Materia eliminada correctamente" });
   }
 );
 

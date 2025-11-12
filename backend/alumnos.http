@@ -1,4 +1,4 @@
-@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjMsInVzZXJFbWFpbCI6Impvc2VAZXhhbXBsZS5jb20iLCJpYXQiOjE3NjI5NzIwODQsImV4cCI6MTc2Mjk4NjQ4NH0.9ifYR5xBia9s1POMPF9hOsymn1WR7OnEGQsp1ozpqXk
+@token = {{auth.login.response.body.token}}
 
 
 ### Listar alumnos
@@ -10,16 +10,16 @@ Authorization: Bearer {{token}}
 Content-Type: application/json
 
 {
-  "nombre": "jotitas",
-  "apellido": "Ruiz",
-  "dni": "23123123"
+  "nombre": "lukits",
+  "apellido": "paz",
+  "dni": "14823712"
 }
 
 ### Obtener alumno por ID
-GET http://localhost:3000/alumnos/2
+GET http://localhost:3000/alumnos/1
 Authorization: Bearer {{token}}
 ### Actualizar alumno
-PUT http://localhost:3000/alumnos/2
+PUT http://localhost:3000/alumnos/1
 Authorization: Bearer {{token}}
 Content-Type: application/json
 
@@ -30,5 +30,5 @@ Content-Type: application/json
 }
 
 ### Eliminar alumno
-DELETE http://localhost:3000/alumnos/7
+DELETE http://localhost:3000/alumnos/1
 Authorization: Bearer {{token}}
