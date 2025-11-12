@@ -1,47 +1,67 @@
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-import { useState } from "react";
-import Login from "./pages/Login";
-import Alumnos from "./pages/Alumnos";
-import Materias from "./pages/Materias";
-import Notas from "./pages/Notas";
+import { BrowserRouter, Routes, Route, Navigate, Link } from "react-router-dom";
+import { AuthProvider, AuthPage, useAuth } from "./Auth.jsx";
+import { Login } from "./Login.jsx";
+import { Alumnos } from "./Alumnos.jsx";
+import { Materias } from "./Materias.jsx";
+import { Notas } from "./Notas.jsx";
 import "./index.css";
 
-export default function App() {
-  const [auth, setAuth] = useState(!!localStorage.getItem("token"));
-
-  const handleLogout = () => {
-    localStorage.removeItem("token");
-    setAuth(false);
-  };
-
+function Header() {
+  const { token, logout } = useAuth();
   return (
-    <BrowserRouter>
-      <Routes>
+    <header className="container" style={{ marginTop: "1rem" }}>
+      <nav style={{ display: "flex", gap: "1rem" }}>
+        {token && (
+          <>
+            <Link to="/alumnos">Alumnos</Link>
+            <Link to="/materias">Materias</Link>
+            <Link to="/notas">Notas</Link>
+            <button onClick={logout}>Salir</button>
+          </>
+        )}
+      </nav>
+    </header>
+  );
+}
 
-        <Route
-          path="/login"
-          element={<Login onLogin={() => setAuth(true)} />}
-        />
+export default function App() {
+  return (
+    <AuthProvider>
+      <BrowserRouter>
+        <Header />
+        <Routes>
+          <Route path="/login" element={<Login />} />
 
-        <Route
-          path="/alumnos"
-          element={auth ? <Alumnos /> : <Navigate to="/login" />}
-        />
-        <Route
-          path="/materias"
-          element={auth ? <Materias /> : <Navigate to="/login" />}
-        />
-        <Route
-          path="/notas"
-          element={auth ? <Notas /> : <Navigate to="/login" />}
-        />
+          <Route
+            path="/alumnos"
+            element={
+              <AuthPage>
+                <Alumnos />
+              </AuthPage>
+            }
+          />
 
- 
-        <Route
-          path="/"
-          element={<Navigate to={auth ? "/alumnos" : "/login"} />}
-        />
-      </Routes>
-    </BrowserRouter>
+          <Route
+            path="/materias"
+            element={
+              <AuthPage>
+                <Materias />
+              </AuthPage>
+            }
+          />
+
+          <Route
+            path="/notas"
+            element={
+              <AuthPage>
+                <Notas />
+              </AuthPage>
+            }
+          />
+
+          <Route path="/" element={<Navigate to="/login" />} />
+        </Routes>
+      </BrowserRouter>
+    </AuthProvider>
   );
 }
