@@ -1,0 +1,31 @@
+### Crear usuario
+POST http://localhost:3000/usuarios
+Content-Type: application/json
+
+{
+  "nombre": "josemaria",
+  "email": "jose@example.com",
+  "password": "123456"
+}
+
+### Listar usuarios
+GET http://localhost:3000/usuarios
+Authorization: Bearer {{token}}
+
+### Obtener usuario por ID
+GET http://localhost:3000/usuarios/1
+Authorization: Bearer {{token}}
+
+### Actualizar usuario
+PUT http://localhost:3000/usuarios/1
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "nombre": "Matías De la Puente",
+  "email": "matias@mail.com"
+}
+
+### Eliminar usuario
+DELETE http://localhost:3000/usuarios/1
+Authorization: Bearer {{token}}
