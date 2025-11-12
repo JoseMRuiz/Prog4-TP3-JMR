@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useAuth } from "../Auth";
 
-export function Materias() {
+export default function Materias() {
   const { token } = useAuth();
   const [materias, setMaterias] = useState([]);
   const [form, setForm] = useState({ nombre: "", codigo: "", anio: "" });

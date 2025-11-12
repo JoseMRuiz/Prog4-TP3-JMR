@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useAuth } from "../Auth";
 
-export function Alumnos() {
+export default function Alumnos() {
   const { token } = useAuth();
   const [alumnos, setAlumnos] = useState([]);
   const [form, setForm] = useState({ nombre: "", apellido: "", dni: "" });
