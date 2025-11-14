@@ -48,6 +48,30 @@ export default function Alumnos() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (!form.nombre.trim())
+      return window.alert("El nombre es obligatorio");
+
+    if (!/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/.test(form.nombre))
+      return window.alert("El nombre solo puede contener letras y espacios");
+
+// APELLIDO
+    if (!form.apellido.trim())
+      return window.alert("El apellido es obligatorio");
+
+    if (!/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/.test(form.apellido))
+      return window.alert("El apellido solo puede contener letras y espacios");
+
+// DNI
+    if (!form.dni.trim())
+      return window.alert("El DNI es obligatorio");
+
+    if (isNaN(Number(form.dni)))
+      return window.alert("El DNI debe ser numérico");
+
+    if (form.dni.length < 7 || form.dni.length > 8)
+      return window.alert("El DNI debe tener entre 7 y 8 dígitos");
+    
     if (editId) await updateAlumno(editId);
     else await createAlumno();
     setForm({ nombre: "", apellido: "", dni: "" });

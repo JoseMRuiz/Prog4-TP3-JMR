@@ -50,6 +50,32 @@ export default function Materias() {
   };
 
   const handleSubmit = async (e) => {
+
+    if (!form.nombre?.trim())
+  return window.alert("El nombre de la materia es obligatorio");
+
+    if (form.nombre.trim().length < 3)
+      return window.alert("El nombre debe tener al menos 3 caracteres");
+    
+    // CÓDIGO
+    if (!form.codigo?.trim())
+      return window.alert("El código es obligatorio");
+    
+    if (!/^[a-zA-Z0-9]+$/.test(form.codigo))
+      return window.alert("El código debe contener solo letras y números");
+    
+    // AÑO
+    if (!form.anio)
+      return window.alert("El año es obligatorio");
+    
+    const anioNum = Number(form.anio);
+    
+    if (isNaN(anioNum))
+      return window.alert("El año debe ser un número");
+    
+    if (anioNum < 1 || anioNum > 6)
+      return window.alert("El año debe ser un número entre 1 y 6");
+
     e.preventDefault();
     if (editId) await updateMateria(editId);
     else await createMateria();

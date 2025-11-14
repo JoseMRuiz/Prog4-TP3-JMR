@@ -30,10 +30,12 @@ router.post(
   verificarAutenticacion,
   body("nombre")
     .notEmpty().withMessage("El nombre es obligatorio")
-    .isString().withMessage("El nombre debe ser texto"),
+    .isString().withMessage("El nombre debe ser texto")    .matches(/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/)
+    .withMessage("El nombre solo puede contener letras y espacios"),
   body("apellido")
     .notEmpty().withMessage("El apellido es obligatorio")
-    .isString().withMessage("El apellido debe ser texto"),
+    .isString().withMessage("El apellido debe ser texto")    .matches(/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/)
+    .withMessage("El nombre solo puede contener letras y espacios"),
   body("dni")
     .notEmpty().withMessage("El DNI es obligatorio")
     .isNumeric().withMessage("El DNI debe ser numérico")
@@ -65,11 +67,13 @@ router.put(
   body("nombre")
     .optional()
     .isString().withMessage("El nombre debe ser texto")
-    .notEmpty().withMessage("El nombre no puede estar vacío"),
+    .notEmpty().withMessage("El nombre no puede estar vacío").matches(/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/)
+    .withMessage("El nombre solo puede contener letras y espacios"),
   body("apellido")
     .optional()
     .isString().withMessage("El apellido debe ser texto")
-    .notEmpty().withMessage("El apellido no puede estar vacío"),
+    .notEmpty().withMessage("El apellido no puede estar vacío").matches(/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/)
+    .withMessage("El nombre solo puede contener letras y espacios"),
   body("dni")
     .optional()
     .isNumeric().withMessage("El DNI debe ser numérico")

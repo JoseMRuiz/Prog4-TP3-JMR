@@ -13,12 +13,32 @@ export default function Notas() {
   });
   const [editId, setEditId] = useState(null);
 
+  const [alumnos, setAlumnos] = useState([]);
+  const [materias, setMaterias] = useState([]);
+
+
   const getNotas = async () => {
     const res = await fetch("http://localhost:3000/notas", {
       headers: { Authorization: `Bearer ${token}` },
     });
     const data = await res.json();
     setNotas(data.notas || []);
+  };
+
+  const getAlumnos = async () => {
+    const res = await fetch("http://localhost:3000/alumnos", {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    const data = await res.json();
+    setAlumnos(data.alumnos || []);
+  };
+
+  const getMaterias = async () => {
+    const res = await fetch("http://localhost:3000/materias", {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    const data = await res.json();
+    setMaterias(data.materias || []);
   };
 
   const createNota = async () => {
@@ -54,8 +74,34 @@ export default function Notas() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (!form.alumno_id)
+      return window.alert("Seleccione un alumno");
+
+    if (isNaN(Number(form.alumno_id)) || Number(form.alumno_id) < 1)
+      return window.alert("El ID del alumno debe ser válido");
+
+    if (!form.materia_id)
+      return window.alert("Seleccione una materia");
+
+    if (isNaN(Number(form.materia_id)) || Number(form.materia_id) < 1)
+      return window.alert("El ID de la materia debe ser válido");
+
+    const validarNota = (valor, nombre) => {
+      if (valor === "" || valor === null || valor === undefined) return;
+      const n = Number(valor);
+      if (isNaN(n)) return window.alert(`La ${nombre} debe ser numérica`);
+      if (n < 0 || n > 10)
+        return window.alert(`La ${nombre} debe estar entre 0 y 10`);
+    };
+
+    validarNota(form.nota1, "nota 1");
+    validarNota(form.nota2, "nota 2");
+    validarNota(form.nota3, "nota 3");
+
     if (editId) await updateNota(editId);
     else await createNota();
+
     setForm({
       alumno_id: "",
       materia_id: "",
@@ -63,23 +109,27 @@ export default function Notas() {
       nota2: "",
       nota3: "",
     });
+
     setEditId(null);
     getNotas();
   };
+
 
   const handleEdit = (nota) => {
     setForm({
       alumno_id: nota.alumno_id,
       materia_id: nota.materia_id,
-      nota1: nota.nota1 || "",
-      nota2: nota.nota2 || "",
-      nota3: nota.nota3 || "",
+      nota1: nota.nota1 ?? "",
+      nota2: nota.nota2 ?? "",
+      nota3: nota.nota3 ?? "",
     });
     setEditId(nota.id);
   };
 
   useEffect(() => {
     getNotas();
+    getAlumnos();
+    getMaterias();
   }, []);
 
   return (
@@ -87,18 +137,32 @@ export default function Notas() {
       <h3>Gestión de Notas</h3>
 
       <form onSubmit={handleSubmit}>
-        <input
-          placeholder="ID Alumno"
+        <select
           value={form.alumno_id}
           onChange={(e) => setForm({ ...form, alumno_id: e.target.value })}
           required
-        />
-        <input
-          placeholder="ID Materia"
+        >
+          <option value="">Seleccione un alumno</option>
+          {alumnos.map((a) => (
+            <option key={a.id} value={a.id}>
+              {a.nombre} {a.apellido}
+            </option>
+          ))}
+        </select>
+
+        <select
           value={form.materia_id}
           onChange={(e) => setForm({ ...form, materia_id: e.target.value })}
           required
-        />
+        >
+          <option value="">Seleccione una materia</option>
+          {materias.map((m) => (
+            <option key={m.id} value={m.id}>
+              {m.nombre} (Año {m.anio})
+            </option>
+          ))}
+        </select>
+
         <input
           placeholder="Nota 1"
           value={form.nota1}
@@ -114,7 +178,9 @@ export default function Notas() {
           value={form.nota3}
           onChange={(e) => setForm({ ...form, nota3: e.target.value })}
         />
+
         <button type="submit">{editId ? "Actualizar" : "Agregar"}</button>
+
         {editId && (
           <button type="button" onClick={() => setEditId(null)}>
             Cancelar
